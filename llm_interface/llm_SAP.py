@@ -82,7 +82,7 @@ def LLM_SAP_batch_Zephyr(prompts_list, llm_model):
 def LLM_SAP_batch_gpt(prompts_list, key):
     print("### run LLM_SAP_batch with gpt-4o ###")
 
-    url = "https://api.openai.com/v1/chat/completions"
+    url = "https://litellm.tokengate.ru/v1"
     api_key = key
 
     with open('llm_interface/template/template_SAP_system.txt', 'r') as f:
