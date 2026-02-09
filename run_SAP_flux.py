@@ -57,8 +57,15 @@ def generate_models_params(args, SAP_prompts):
     return params
 
 def run(args):
-    # generate prompt decomposition
-    SAP_prompts = LLM_SAP(args.prompt, llm=args.llm, key=API_KEY)[0] # using [0] because of a single prompt decomposition
+    # Load SAP prompts from ContraBench_prompt_mapping.json
+    import json
+    mapping_path = os.path.join(BASE_FOLDER, "benchmarks", "SAP_prompts", "ContraBench_prompt_mapping.json")
+    with open(mapping_path, 'r') as f:
+        prompt_mapping = json.load(f)
+    if args.prompt not in prompt_mapping:
+        print(f"Error: Prompt '{args.prompt}' not found in ContraBench_prompt_mapping.json.")
+        exit(1)
+    SAP_prompts = prompt_mapping[args.prompt]
     params = generate_models_params(args, SAP_prompts)
     # Load model
     model = load_model(hf_token=args.hf_token)
