@@ -118,6 +118,10 @@ def LLM_SAP_batch_gpt(prompts_list, key):
     response = requests.request("POST", url, headers=headers, data=payload)
     obj=response.json()
     
+    if 'choices' not in obj:
+        print(f"Error: API response does not contain 'choices'. Full response: {obj}")
+        return [None for _ in prompts_list]
+
     text=obj['choices'][0]['message']['content']
     print(f"text: {text}")
     parsed_outputs = parse_batched_llm_output(text, prompts_list)
