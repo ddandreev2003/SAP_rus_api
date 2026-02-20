@@ -11,7 +11,70 @@ def LLM_SAP(prompts_list, llm='GPT', key='', llm_model=None):
         result = LLM_SAP_batch_Zephyr(prompts_list, llm_model)
     elif llm == 'GPT':
         result = LLM_SAP_batch_gpt(prompts_list, key)
+    elif llm.lower().startswith('qwen'):
+        result = LLM_SAP_batch_Qwen(prompts_list, llm_model)
+    else:
+        raise ValueError(f"Unknown llm: {llm}")
     return result
+# Load the Zephyr model once and reuse it
+def load_Qwen_pipeline():
+    from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
+    import torch
+
+    model_id = "Qwen/Qwen3-0.6B"  # или "Qwen/Qwen1.5-0.5B" если нужен base, либо другой id для 0.6B
+
+    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
+        device_map="auto"
+    )
+
+    pipe = pipeline(
+        "text-generation",
+        model=model,
+        tokenizer=tokenizer,
+        return_full_text=False,
+        max_new_tokens=1024,
+        do_sample=True,
+        temperature=0.7,
+        top_p=0.9,
+        eos_token_id=tokenizer.eos_token_id
+    )
+    return pipe
+
+def LLM_SAP_batch_Qwen(prompts_list, llm_model):
+    print("### run LLM_SAP_batch with Qwen ###")
+
+    # Load templates
+    with open('llm_interface/template/template_SAP_system_short.txt', 'r') as f:
+        template_system = ' '.join(f.readlines())
+
+    with open('llm_interface/template/template_SAP_user.txt', 'r') as f:
+        template_user = ' '.join(f.readlines())
+
+    numbered_prompts = [f"### Input {i + 1}: {p}\n### Output:" for i, p in enumerate(prompts_list)]
+    prompt_user = template_user + "\n\n" + "\n\n".join(numbered_prompts)
+    full_prompt = template_system + "\n\n" + prompt_user
+
+    # Load Qwen
+    if llm_model is None:
+        pipe = load_Qwen_pipeline()
+    else:
+        pipe = llm_model
+
+    output = pipe(
+        full_prompt,
+        max_new_tokens=256,
+        temperature=0.7,
+        do_sample=True,
+        top_p=0.9,
+        return_full_text=False
+    )[0]["generated_text"]
+
+    print(f"output: {output}")
+    parsed_outputs = parse_batched_llm_output(output, prompts_list)
+    return parsed_outputs
 
 # Load the Zephyr model once and reuse it
 def load_Zephyr_pipeline():
