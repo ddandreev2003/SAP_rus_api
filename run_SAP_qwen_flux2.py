@@ -1,5 +1,6 @@
 import os
 from llm_interface.llm_SAP import LLM_SAP
+from SAP_pipeline_flux import SapFlux
 from diffusers import DiffusionPipeline
 import torch
 
@@ -15,9 +16,9 @@ def main():
         raise RuntimeError("Установите переменную окружения HF_TOKEN с вашим HuggingFace токеном!")
 
     print("\nЗагружаем Flux2...")
-    model = DiffusionPipeline.from_pretrained(
+    model = SapFlux.from_pretrained(
         "diffusers/FLUX.2-dev-bnb-4bit",
-        torch_dtype=torch.bfloat16 if torch.cuda.is_available() else torch.float32,
+        torch_dtype=torch.bfloat16,
         token=hf_token
     ).to("cuda" if torch.cuda.is_available() else "cpu")
 
