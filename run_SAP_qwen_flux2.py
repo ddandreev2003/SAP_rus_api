@@ -16,7 +16,8 @@ def main():
         raise RuntimeError("Установите переменную окружения HF_TOKEN с вашим HuggingFace токеном!")
 
     print("\nЗагружаем Flux2...")
-    model = SapFlux.from_pretrained(
+    from diffusers import DiffusionPipeline
+    model = DiffusionPipeline.from_pretrained(
         "diffusers/FLUX.2-dev-bnb-4bit",
         torch_dtype=torch.bfloat16,
         token=hf_token
