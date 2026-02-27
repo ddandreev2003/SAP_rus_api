@@ -43,21 +43,31 @@ This will install all required packages listed in pyproject.toml and lock their 
 ```
 
 ## Usage
-Once the environment is set up, you can generate images using the SAP pipeline by running:
-```
-python run_SAP_flux.py --prompt "your prompt" --seeds_list seed1 seed2 seed3
-```
 
-for example:
-```
-python run_SAP_flux.py --prompt "A bear is performing a handstand in the park" --seeds_list 30498
-```
+### 1. Генерация изображений по SAP через Flux2
 
-Before running, make sure to insert your API key in the run_SAP_flux.py script:
+**a) С помощью заранее подготовленных SAP-промптов:**
 ```
-API_KEY = "YOUR_API_KEY"
+python run_SAP_flux.py --prompt "A bear performing a handstand in the park" --flux_version 2 --hf_token <YOUR_HF_TOKEN>
 ```
-All generated images will be saved to:
+Параметр --prompt должен совпадать с ключом в benchmarks/SAP_prompts/ContraBench_prompt_mapping.json.
+
+**b) С помощью автоматической генерации SAP-промптов через Qwen:**
+```
+python run_SAP_qwen_flux2.py
+```
+Скрипт запросит у вас описание, сгенерирует SAP-промпты через Qwen/Qwen3-30B-A3B и нарисует изображение через Flux2. Не забудьте установить переменную окружения HF_TOKEN с вашим HuggingFace токеном.
+
+### 2. Эволюция и оптимизация SAP-подсказок через open-evolve и Qwen
+
+Для автоматической оптимизации кода с помощью SAP-подсказок и Qwen используйте:
+```
+python run_SAP_qwen_evolve.py
+```
+В этом файле примеры эволюции функций (fibonacci, bubble_sort) с помощью Qwen и open-evolve. Для генерации новых вариантов кода используется LLM_SAP с llm='Qwen'.
+
+---
+Все сгенерированные изображения сохраняются в:
 ```
 results/<prompt>/Seed<seed>.png
 ```

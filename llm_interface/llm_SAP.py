@@ -21,7 +21,7 @@ def load_Qwen_pipeline():
     from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
     import torch
 
-    model_id = "Qwen/Qwen3-0.6B"  # или "Qwen/Qwen1.5-0.5B" если нужен base, либо другой id для 0.6B
+    model_id = "Qwen/Qwen3-30B-A3B"  # заменено на 30B-A3B
 
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     model = AutoModelForCausalLM.from_pretrained(
