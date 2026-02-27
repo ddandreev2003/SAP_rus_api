@@ -40,8 +40,7 @@ if __name__ == "__main__":
     result = run_evolution(
         initial_program=initial_program,
         evaluator=lambda path: {"score": benchmark_fib(path)},
-        iterations=100,
-        prompt_generator=qwen_prompt_generator
+        iterations=100
     )
     print(f"Best evolved code (fibonacci):\n{result.best_code}")
 
