@@ -4,6 +4,9 @@ def main():
     description = input("Enter your description for SAP prompt generation: ")
     sap_result = LLM_SAP([description], llm='Qwen')[0]
     print("\nSAP prompt decomposition:")
+    if sap_result is None:
+        print("Ошибка: не удалось сгенерировать decomposition для данного описания. Попробуйте другое описание или проверьте настройки модели.")
+        return
     print("Explanation:", sap_result.get('explanation', ''))
     print("Prompts list:")
     for i, p in enumerate(sap_result.get('prompts_list', [])):
