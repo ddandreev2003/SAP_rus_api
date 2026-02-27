@@ -35,7 +35,7 @@ def load_Qwen_pipeline():
         model=model,
         tokenizer=tokenizer,
         return_full_text=False,
-        max_new_tokens=1024,
+        max_new_tokens=6144,  # увеличено в 6 раз
         do_sample=True,
         temperature=0.7,
         top_p=0.9,
