@@ -16,12 +16,12 @@ def main():
         raise RuntimeError("Установите переменную окружения HF_TOKEN с вашим HuggingFace токеном!")
 
     print("\nЗагружаем Flux2...")
-    from diffusers import DiffusionPipeline
-    model = DiffusionPipeline.from_pretrained(
-        "diffusers/FLUX.2-dev-bnb-4bit",
-        torch_dtype=torch.bfloat16,
-        token=hf_token
-    ).to("cuda" if torch.cuda.is_available() else "cpu")
+    from SAP_pipeline_flux import SapFlux
+    model = SapFlux.from_pretrained(
+            "diffusers/FLUX.2-dev-bnb-4bit",
+            torch_dtype=torch.bfloat16 if torch.cuda.is_available() else torch.float32,
+            token=hf_token
+        ).to("cuda" if torch.cuda.is_available() else "cpu")
 
     params = {
         "height": 1024,
