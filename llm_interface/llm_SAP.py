@@ -65,7 +65,6 @@ def LLM_SAP_batch_Qwen(prompts_list, llm_model):
 
     output = pipe(
         full_prompt,
-        max_new_tokens=256,
         temperature=0.7,
         do_sample=True,
         top_p=0.9,
